@@ -4,7 +4,8 @@ import React from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import {
-  signInWithEmailAndPassword,
+  createUserWithEmailAndPassword,
+  updateProfile,
   signInWithPopup,
   GoogleAuthProvider,
 } from "firebase/auth";
@@ -55,15 +56,9 @@ import { api } from "@/core/api";
         <div style={{ position: 'absolute', inset: 0, pointerEvents: 'none', overflow: 'hidden' }}>
           {glyphs.map((g, i) => (
             <span key={i} className="serif" style={{
-              position: 'absolute',
-              left: g.x + '%',
-              top:  g.y + '%',
-              fontSize: g.size,
-              color: 'white',
-              opacity: 0.18,
-              fontWeight: 600,
-              animation: 'drift 6s ease-in-out infinite',
-              animationDelay: g.delay + 's',
+              position: 'absolute', left: g.x + '%', top: g.y + '%',
+              fontSize: g.size, color: 'white', opacity: 0.18, fontWeight: 600,
+              animation: 'drift 6s ease-in-out infinite', animationDelay: g.delay + 's',
             }}>{g.sym}</span>
           ))}
         </div>
@@ -74,54 +69,59 @@ import { api } from "@/core/api";
     const BrandPanel = () => (
       <div className="auth-brand">
         <FloatingGlyphs/>
-        <div style={{ position: 'relative', zIndex: 2 }}>
+        <div style={{ position: 'relative', zIndex: 2, display: 'flex', flexDirection: 'column', height: '100%' }}>
           <Link href="/" style={{ display: 'inline-flex', alignItems: 'center', gap: 10, color: 'white', marginBottom: 48 }}>
             <Logo/>
             <span style={{ fontWeight: 800, fontSize: 20, letterSpacing: '-0.015em' }}>Mathify</span>
           </Link>
           <div style={{ flex: 1 }}>
             <h2 style={{ color: 'white', fontSize: 'clamp(26px,3vw,38px)', fontWeight: 700, letterSpacing: '-0.03em', lineHeight: 1.1, margin: '0 0 16px', maxWidth: 380 }}>
-              Pick up your streak{' '}
-              <span className="serif" style={{ fontWeight: 500 }}>where you left off</span>.
+              Your math journey{' '}
+              <span className="serif" style={{ fontWeight: 500 }}>starts today</span>.
             </h2>
             <p style={{ color: 'rgba(255,255,255,0.75)', fontSize: 15, lineHeight: 1.6, maxWidth: 360, margin: '0 0 36px' }}>
-              Your lessons, your pace — Mathify remembers every step of the way.
+              From 2+2 to real analysis. Structured courses, daily streaks, and a community of learners.
             </p>
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12, maxWidth: 360 }}>
+              {[
+                { num: '248', label: 'courses' },
+                { num: '12k+', label: 'students' },
+                { num: '5 levels', label: 'free forever' },
+                { num: '4.9★', label: 'avg rating' },
+              ].map((s) => (
+                <div key={s.label} style={{ padding: '14px 16px', borderRadius: 14, background: 'rgba(255,255,255,0.1)', border: '1px solid rgba(255,255,255,0.18)' }}>
+                  <div style={{ color: 'white', fontWeight: 800, fontSize: 22, letterSpacing: '-0.02em', lineHeight: 1 }}>{s.num}</div>
+                  <div style={{ color: 'rgba(255,255,255,0.65)', fontSize: 12, marginTop: 4 }}>{s.label}</div>
+                </div>
+              ))}
+            </div>
           </div>
-          <div className="auth-streak">
+          <div className="auth-streak" style={{ marginTop: 36 }}>
             <div className="auth-streak__flame">
               <Icon.Flame style={{ width: 20, height: 20 }}/>
             </div>
             <div>
-              <div style={{ color: 'white', fontWeight: 700, fontSize: 15 }}>12-day streak</div>
-              <div style={{ color: 'rgba(255,255,255,0.65)', fontSize: 12, marginTop: 2 }}>Keep it going — log in to continue</div>
+              <div style={{ color: 'white', fontWeight: 700, fontSize: 15 }}>First 5 levels free</div>
+              <div style={{ color: 'rgba(255,255,255,0.65)', fontSize: 12, marginTop: 2 }}>No credit card needed</div>
             </div>
             <div className="auth-stars">
               {[1,2,3,4,5].map((i) => <Icon.Star key={i} style={{ width: 13, height: 13 }}/>)}
             </div>
-          </div>
-          <div style={{ marginTop: 20, display: 'flex', gap: 10, flexWrap: 'wrap' }}>
-            {['Calculus', 'Linear Algebra', 'Probability', 'Number Theory'].map((t) => (
-              <span key={t} style={{ padding: '5px 12px', borderRadius: 999, background: 'rgba(255,255,255,0.12)', border: '1px solid rgba(255,255,255,0.2)', color: 'white', fontSize: 12, fontWeight: 600 }}>{t}</span>
-            ))}
           </div>
         </div>
       </div>
     );
 
     // ── Field ──────────────────────────────────────────────────────────────────
-    const Field = ({ id, label, aside, children }: { id: string, label: string, aside?: React.ReactNode, children: React.ReactNode }) => (
+    const Field = ({ id, label, children }: { id: string, label: string, children: React.ReactNode }) => (
       <div className="auth-field">
-        <div className="auth-field__row">
-          <label className="auth-field__label" htmlFor={id}>{label}</label>
-          {aside}
-        </div>
+        <label className="auth-field__label" htmlFor={id}>{label}</label>
         {children}
       </div>
     );
 
     // ── Password Input ─────────────────────────────────────────────────────────
-    const PasswordInput = ({ id, name, value, onChange, placeholder }: { id: string, name?: string, value: string, onChange: (e: React.ChangeEvent<HTMLInputElement>) => void, placeholder: string }) => {
+    const PasswordInput = ({ id, name, value, onChange, placeholder, autoComplete }: { id: string, name?: string, value: string, onChange: (e: React.ChangeEvent<HTMLInputElement>) => void, placeholder?: string, autoComplete?: string }) => {
       const [show, setShow] = React.useState(false);
       return (
         <div className="auth-field__wrap">
@@ -132,11 +132,40 @@ import { api } from "@/core/api";
             placeholder={placeholder || 'Password'}
             value={value}
             onChange={onChange}
-            autoComplete="current-password"
+            autoComplete={autoComplete || 'new-password'}
           />
           <button type="button" className="auth-eye" onClick={() => setShow(!show)} aria-label={show ? 'Hide password' : 'Show password'}>
             {show ? <Icon.EyeOff/> : <Icon.Eye/>}
           </button>
+        </div>
+      );
+    };
+
+    // ── Strength Meter ─────────────────────────────────────────────────────────
+    const StrengthMeter = ({ password }: { password: string }) => {
+      const getStrength = (p: string) => {
+        if (!p) return 0;
+        let s = 0;
+        if (p.length >= 8)          s++;
+        if (/[A-Z]/.test(p))        s++;
+        if (/[0-9]/.test(p))        s++;
+        if (/[^A-Za-z0-9]/.test(p)) s++;
+        return s;
+      };
+      const strength = getStrength(password);
+      const colors   = ['var(--line)', 'var(--rose)', 'var(--amber)', 'var(--blue)', 'var(--green)'];
+      const labels   = ['', 'Weak', 'Fair', 'Good', 'Strong'];
+      const barColor = colors[strength];
+      return (
+        <div>
+          <div className="auth-strength">
+            {[1,2,3,4].map((n) => (
+              <span key={n} style={{ background: n <= strength ? barColor : 'var(--line)' }}/>
+            ))}
+          </div>
+          {password.length > 0 && (
+            <div style={{ fontSize: 11, fontWeight: 600, color: barColor, marginTop: 4 }}>{labels[strength]}</div>
+          )}
         </div>
       );
     };
@@ -146,25 +175,26 @@ import { api } from "@/core/api";
 
     // ── Firebase error code → human message ────────────────────────────────────
     const friendlyError = (code: string) => ({
-      'auth/user-not-found':      'No account found with that email.',
-      'auth/wrong-password':      'Incorrect password. Try again.',
-      'auth/invalid-credential':  'Invalid email or password.',
-      'auth/too-many-requests':   'Too many attempts — please wait a moment.',
-      'auth/user-disabled':       'This account has been disabled.',
-      'auth/invalid-email':       'Please enter a valid email address.',
+      'auth/email-already-in-use':   'An account with that email already exists.',
+      'auth/weak-password':          'Password must be at least 6 characters.',
+      'auth/invalid-email':          'Please enter a valid email address.',
+      'auth/too-many-requests':      'Too many attempts — please wait a moment.',
       'auth/network-request-failed': 'Network error — check your connection.',
-    }[code] || 'Sign in failed. Please try again.');
+    }[code] || 'Registration failed. Please try again.');
 
-export default function LoginPage() {
+export default function RegisterPage() {
   const router = useRouter();
+  const [name, setName]         = React.useState('');
   const [email, setEmail]       = React.useState('');
   const [password, setPassword] = React.useState('');
+  const [agree, setAgree]       = React.useState(false);
   const [error, setError]       = React.useState('');
   const [loading, setLoading]   = React.useState(false);
 
-  // Sign in with Firebase, exchange the idToken for a backend session
-  // (POST /api/auth/login), then route by role.
-  const finishLogin = async (idToken: string) => {
+  // Create the Firebase account, exchange the idToken for a backend session
+  // (POST /api/auth/login — the backend provisions the user on first login),
+  // then route by role.
+  const finishRegister = async (idToken: string) => {
     const { role } = await api.login(idToken);
     router.push(role === 'ADMIN' ? '/admin' : '/dashboard');
     router.refresh();
@@ -172,11 +202,13 @@ export default function LoginPage() {
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    if (!agree) { setError('Please accept the Terms and Privacy Policy.'); return; }
     setError(''); setLoading(true);
     try {
-      const cred    = await signInWithEmailAndPassword(getFirebaseAuth(), email, password);
+      const cred = await createUserWithEmailAndPassword(getFirebaseAuth(), email, password);
+      await updateProfile(cred.user, { displayName: name });
       const idToken = await cred.user.getIdToken();
-      await finishLogin(idToken);
+      await finishRegister(idToken);
     } catch (err) {
       setError(friendlyError((err as { code?: string }).code ?? ''));
       setLoading(false);
@@ -188,7 +220,7 @@ export default function LoginPage() {
     try {
       const cred    = await signInWithPopup(getFirebaseAuth(), new GoogleAuthProvider());
       const idToken = await cred.user.getIdToken();
-      await finishLogin(idToken);
+      await finishRegister(idToken);
     } catch (err) {
       const code = (err as { code?: string }).code ?? '';
       if (code !== 'auth/popup-closed-by-user') setError(friendlyError(code));
@@ -206,11 +238,11 @@ export default function LoginPage() {
             <span>Mathify</span>
           </div>
           <div className="auth-eyebrow">
-            <span className="tag">WELCOME BACK</span>
-            Sign back in
+            <span className="tag">FREE FOREVER</span>
+            First 5 levels, no card
           </div>
-          <h1 className="auth-title">Sign in to Mathify</h1>
-          <p className="auth-sub">Continue your streak and pick up exactly where you stopped.</p>
+          <h1 className="auth-title">Create your account</h1>
+          <p className="auth-sub">Start your streak today — from 2+2 to real analysis.</p>
 
           {error && (
             <div style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '12px 14px', borderRadius: 12, background: 'var(--rose-soft)', border: '1px solid var(--rose)', color: 'var(--rose)', fontSize: 13, fontWeight: 600, marginBottom: 4 }}>
@@ -219,6 +251,17 @@ export default function LoginPage() {
           )}
 
           <form className="auth-form" onSubmit={handleSubmit}>
+            <Field id="name" label="Full name">
+              <div className="auth-field__wrap">
+                <input
+                  id="name" type="text" className="auth-input"
+                  placeholder="Your full name"
+                  value={name} onChange={(e: React.ChangeEvent<HTMLInputElement>) => setName(e.target.value)}
+                  autoComplete="name" required
+                />
+              </div>
+            </Field>
+
             <Field id="email" label="Email">
               <div className="auth-field__wrap">
                 <input
@@ -230,33 +273,36 @@ export default function LoginPage() {
               </div>
             </Field>
 
-            <Field
-              id="password" label="Password"
-              aside={<a href="#" className="auth-link" style={{ fontSize: 12 }}>Forgot?</a>}
-            >
+            <Field id="password" label="Password">
               <PasswordInput
-                id="password"
-                name="password"
-                value={password}
+                id="password" value={password}
                 onChange={(e: React.ChangeEvent<HTMLInputElement>) => setPassword(e.target.value)}
-                placeholder="Your password"
+                placeholder="Create a password"
+                autoComplete="new-password"
               />
+              <StrengthMeter password={password}/>
             </Field>
 
-            <button type="submit" className="auth-submit" disabled={loading}>
-              {loading ? 'Signing in…' : <><span>Sign in</span> <Icon.Arrow/></>}
+            <label className="auth-check" htmlFor="agree">
+              <input id="agree" type="checkbox" checked={agree} onChange={(e: React.ChangeEvent<HTMLInputElement>) => setAgree(e.target.checked)}/>
+              <span className="auth-check__box"><Icon.Check/></span>
+              <span>I agree to the <a href="#" className="auth-link">Terms</a> and <a href="#" className="auth-link">Privacy Policy</a>.</span>
+            </label>
+
+            <button type="submit" className="auth-submit" disabled={!agree || loading} style={{ opacity: agree && !loading ? 1 : 0.55 }}>
+              {loading ? 'Creating account…' : <><span>Create account</span> <Icon.Arrow/></>}
             </button>
           </form>
 
           <Divider/>
           <button type="button" className="auth-google" onClick={handleGoogle} disabled={loading}>
             <GoogleG/>
-            Sign in with Google
+            Sign up with Google
           </button>
 
           <p className="auth-foot">
-            New to Mathify?{' '}
-            <Link href="/register" className="auth-link">Create an account</Link>
+            Already have an account?{' '}
+            <Link href="/login" className="auth-link">Sign in</Link>
           </p>
         </div>
       </div>

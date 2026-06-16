@@ -1,22 +1,23 @@
 "use client";
 
-import { useState, useEffect } from 'react';
+import Link from 'next/link';
+import { useState, useEffect, type SVGProps, type ReactNode, type CSSProperties, type Dispatch, type SetStateAction } from 'react';
 import './styles.css';
 
 /* ── Icons ─────────────────────────────────────────────────────── */
 const Icon = {
-  Arrow:   (p) => <svg width="16" height="16" viewBox="0 0 16 16" fill="none" {...p}><path d="M3 8H13M13 8L9 4M13 8L9 12" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/></svg>,
-  Check:   (p) => <svg width="16" height="16" viewBox="0 0 16 16" fill="none" {...p}><path d="M3 8.5L6.5 12L13 4.5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/></svg>,
-  Lock:    (p) => <svg width="14" height="14" viewBox="0 0 14 14" fill="none" {...p}><rect x="2.5" y="6" width="9" height="6.5" rx="1.5" stroke="currentColor" strokeWidth="1.6"/><path d="M4.5 6V4.5C4.5 3.12 5.62 2 7 2C8.38 2 9.5 3.12 9.5 4.5V6" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round"/></svg>,
-  Flame:   (p) => <svg width="18" height="18" viewBox="0 0 18 18" fill="none" {...p}><path d="M9 2C9 5 6 5.5 6 9C6 11.5 7.5 13.5 9 13.5C10.5 13.5 12 11.5 12 9C12 7 11 6 11 4C12 5 13 6.5 13 9C13 12 11.2 14.5 9 14.5C6.8 14.5 5 12.5 5 9.5C5 6 9 5 9 2Z" fill="currentColor"/></svg>,
-  Star:    (p) => <svg width="14" height="14" viewBox="0 0 14 14" fill="none" {...p}><path d="M7 1.5L8.7 5L12.5 5.55L9.75 8.2L10.4 12L7 10.2L3.6 12L4.25 8.2L1.5 5.55L5.3 5Z" fill="currentColor"/></svg>,
-  Play:    (p) => <svg width="12" height="12" viewBox="0 0 12 12" fill="none" {...p}><path d="M3.5 2.5V9.5L9.5 6L3.5 2.5Z" fill="currentColor"/></svg>,
-  Bolt:    (p) => <svg width="16" height="16" viewBox="0 0 16 16" fill="none" {...p}><path d="M9 1L3 9H8L7 15L13 7H8L9 1Z" fill="currentColor"/></svg>,
-  Trophy:  (p) => <svg width="16" height="16" viewBox="0 0 16 16" fill="none" {...p}><path d="M5 2H11V7C11 9 9.5 10.5 8 10.5C6.5 10.5 5 9 5 7V2Z" stroke="currentColor" strokeWidth="1.5" strokeLinejoin="round"/><path d="M5 3.5H3V5C3 6 3.7 7 5 7" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/><path d="M11 3.5H13V5C13 6 12.3 7 11 7" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/><path d="M8 10.5V13M6 13.5H10" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/></svg>,
-  Heart:   (p) => <svg width="14" height="14" viewBox="0 0 14 14" fill="none" {...p}><path d="M7 12C7 12 1.5 8.5 1.5 5C1.5 3.3 2.8 2 4.5 2C5.5 2 6.5 2.7 7 3.5C7.5 2.7 8.5 2 9.5 2C11.2 2 12.5 3.3 12.5 5C12.5 8.5 7 12 7 12Z" fill="currentColor"/></svg>,
-  Target:  (p) => <svg width="16" height="16" viewBox="0 0 16 16" fill="none" {...p}><circle cx="8" cy="8" r="6" stroke="currentColor" strokeWidth="1.5"/><circle cx="8" cy="8" r="3" stroke="currentColor" strokeWidth="1.5"/><circle cx="8" cy="8" r="1" fill="currentColor"/></svg>,
-  Compass: (p) => <svg width="20" height="20" viewBox="0 0 20 20" fill="none" {...p}><circle cx="10" cy="10" r="8" stroke="currentColor" strokeWidth="1.6"/><path d="M13.5 6.5L11 11L6.5 13.5L9 9L13.5 6.5Z" fill="currentColor"/></svg>,
-  X:       (p) => <svg width="16" height="16" viewBox="0 0 16 16" fill="none" {...p}><path d="M4 4L12 12M12 4L4 12" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round"/></svg>,
+  Arrow:   (p: SVGProps<SVGSVGElement>) => <svg width="16" height="16" viewBox="0 0 16 16" fill="none" {...p}><path d="M3 8H13M13 8L9 4M13 8L9 12" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/></svg>,
+  Check:   (p: SVGProps<SVGSVGElement>) => <svg width="16" height="16" viewBox="0 0 16 16" fill="none" {...p}><path d="M3 8.5L6.5 12L13 4.5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/></svg>,
+  Lock:    (p: SVGProps<SVGSVGElement>) => <svg width="14" height="14" viewBox="0 0 14 14" fill="none" {...p}><rect x="2.5" y="6" width="9" height="6.5" rx="1.5" stroke="currentColor" strokeWidth="1.6"/><path d="M4.5 6V4.5C4.5 3.12 5.62 2 7 2C8.38 2 9.5 3.12 9.5 4.5V6" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round"/></svg>,
+  Flame:   (p: SVGProps<SVGSVGElement>) => <svg width="18" height="18" viewBox="0 0 18 18" fill="none" {...p}><path d="M9 2C9 5 6 5.5 6 9C6 11.5 7.5 13.5 9 13.5C10.5 13.5 12 11.5 12 9C12 7 11 6 11 4C12 5 13 6.5 13 9C13 12 11.2 14.5 9 14.5C6.8 14.5 5 12.5 5 9.5C5 6 9 5 9 2Z" fill="currentColor"/></svg>,
+  Star:    (p: SVGProps<SVGSVGElement>) => <svg width="14" height="14" viewBox="0 0 14 14" fill="none" {...p}><path d="M7 1.5L8.7 5L12.5 5.55L9.75 8.2L10.4 12L7 10.2L3.6 12L4.25 8.2L1.5 5.55L5.3 5Z" fill="currentColor"/></svg>,
+  Play:    (p: SVGProps<SVGSVGElement>) => <svg width="12" height="12" viewBox="0 0 12 12" fill="none" {...p}><path d="M3.5 2.5V9.5L9.5 6L3.5 2.5Z" fill="currentColor"/></svg>,
+  Bolt:    (p: SVGProps<SVGSVGElement>) => <svg width="16" height="16" viewBox="0 0 16 16" fill="none" {...p}><path d="M9 1L3 9H8L7 15L13 7H8L9 1Z" fill="currentColor"/></svg>,
+  Trophy:  (p: SVGProps<SVGSVGElement>) => <svg width="16" height="16" viewBox="0 0 16 16" fill="none" {...p}><path d="M5 2H11V7C11 9 9.5 10.5 8 10.5C6.5 10.5 5 9 5 7V2Z" stroke="currentColor" strokeWidth="1.5" strokeLinejoin="round"/><path d="M5 3.5H3V5C3 6 3.7 7 5 7" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/><path d="M11 3.5H13V5C13 6 12.3 7 11 7" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/><path d="M8 10.5V13M6 13.5H10" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/></svg>,
+  Heart:   (p: SVGProps<SVGSVGElement>) => <svg width="14" height="14" viewBox="0 0 14 14" fill="none" {...p}><path d="M7 12C7 12 1.5 8.5 1.5 5C1.5 3.3 2.8 2 4.5 2C5.5 2 6.5 2.7 7 3.5C7.5 2.7 8.5 2 9.5 2C11.2 2 12.5 3.3 12.5 5C12.5 8.5 7 12 7 12Z" fill="currentColor"/></svg>,
+  Target:  (p: SVGProps<SVGSVGElement>) => <svg width="16" height="16" viewBox="0 0 16 16" fill="none" {...p}><circle cx="8" cy="8" r="6" stroke="currentColor" strokeWidth="1.5"/><circle cx="8" cy="8" r="3" stroke="currentColor" strokeWidth="1.5"/><circle cx="8" cy="8" r="1" fill="currentColor"/></svg>,
+  Compass: (p: SVGProps<SVGSVGElement>) => <svg width="20" height="20" viewBox="0 0 20 20" fill="none" {...p}><circle cx="10" cy="10" r="8" stroke="currentColor" strokeWidth="1.6"/><path d="M13.5 6.5L11 11L6.5 13.5L9 9L13.5 6.5Z" fill="currentColor"/></svg>,
+  X:       (p: SVGProps<SVGSVGElement>) => <svg width="16" height="16" viewBox="0 0 16 16" fill="none" {...p}><path d="M4 4L12 12M12 4L4 12" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round"/></svg>,
 };
 
 const MODAL_BACKDROP = 'rgba(0,0,0,0.75)';
@@ -33,7 +34,7 @@ const Logo = () => (
 
 
 /* ── Nav ────────────────────────────────────────────────────────── */
-const Nav = ({ isVideoActive }) => {
+const Nav = ({ isVideoActive }: { isVideoActive: boolean }) => {
   const [scrolled, setScrolled] = useState(false);
   useEffect(() => {
     const fn = () => setScrolled(window.scrollY > 24);
@@ -49,7 +50,7 @@ const Nav = ({ isVideoActive }) => {
       background: '#fbf9f4',
     }} className="bg-[#fbf9f4]">
       <div style={{ maxWidth: 1240, margin: '0 auto', padding: '0 28px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-        <a href="/">
+        <Link href="/">
             <div style={{
               display: 'flex', alignItems: 'center', gap: 10,
               padding: scrolled ? '8px 14px 8px 12px' : '0',
@@ -61,16 +62,16 @@ const Nav = ({ isVideoActive }) => {
               <Logo />
               <span style={{ fontWeight: 700, fontSize: 19, letterSpacing: '-0.01em' }}>Mathlify</span>
             </div>
-        </a>
-            
+        </Link>
+
         <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-          <a href="/register" style={{ fontSize: 14, fontWeight: 600, color: 'var(--ink)' }}>Sign in</a>
-          <a href="/login" style={{
+          <Link href="/register" style={{ fontSize: 14, fontWeight: 600, color: 'var(--ink)' }}>Sign in</Link>
+          <Link href="/login" style={{
             display: 'inline-flex', alignItems: 'center', gap: 6,
             padding: '10px 16px', borderRadius: 999,
             background: 'var(--ink)', color: 'var(--paper)',
             fontSize: 14, fontWeight: 600, boxShadow: 'var(--shadow-sm)',
-          }}>Start free<Icon.Arrow /></a>
+          }}>Start free<Icon.Arrow /></Link>
         </div>
       </div>
     </header>
@@ -265,7 +266,7 @@ const HeroDevice = () => (
 
           <div style={{ padding: '16px 18px', borderRadius: 12, background: 'var(--bg)', border: '1px solid var(--line)', marginBottom: 14 }}>
             <p style={{ margin: '0 0 12px', fontSize: 14, lineHeight: 1.6, color: 'var(--ink-2)' }}>
-              Think of a function inside a function as a <i>nested gear system</i>. When the outer wheel turns once, the inner wheel turns by its own rate — multiplied by whatever's spinning it.
+              Think of a function inside a function as a <i>nested gear system</i>. When the outer wheel turns once, the inner wheel turns by its own rate — multiplied by whatever&rsquo;s spinning it.
             </p>
             <div className="serif" style={{ padding: '14px 18px', background: 'var(--paper)', border: '1px dashed var(--line)', borderRadius: 8, textAlign: 'center' }}>
               <span style={{ fontSize: 24, color: 'var(--ink)' }}>
@@ -308,7 +309,7 @@ const HeroDevice = () => (
   </div>
 );
 
-function VideoModal({isModalOpen, setIsModalOpen}) {
+function VideoModal({isModalOpen, setIsModalOpen}: { isModalOpen: boolean; setIsModalOpen: Dispatch<SetStateAction<boolean>> }) {
   return (
     <>
       <a
@@ -326,7 +327,7 @@ function VideoModal({isModalOpen, setIsModalOpen}) {
           background: "var(--ink)", color: "white",
           display: "inline-flex", alignItems: "center", justifyContent: "center",
         }}>
-          <Icon.Play size={12} />
+          <Icon.Play />
         </span>
         Watch a 90s tour
       </a>
@@ -350,7 +351,7 @@ function VideoModal({isModalOpen, setIsModalOpen}) {
                 alignItems: "center", gap: 6,
               }}
             >
-              <Icon.X size={18} /> close
+              <Icon.X /> close
             </button>
             <iframe
               src="https://www.youtube.com/embed/ey_GaPdC9zk?autoplay=1&rel=0"
@@ -365,7 +366,7 @@ function VideoModal({isModalOpen, setIsModalOpen}) {
   );
 }
 
-const Hero = ({isModalOpen, setIsModalOpen}) => (
+const Hero = ({isModalOpen, setIsModalOpen}: { isModalOpen: boolean; setIsModalOpen: Dispatch<SetStateAction<boolean>> }) => (
   <section style={{ position: 'relative', padding: '40px 0 80px', overflow: 'hidden' }}>
     <FloatingGlyphs />
 
@@ -394,9 +395,9 @@ const Hero = ({isModalOpen, setIsModalOpen}) => (
       </p>
 
       <div style={{ display: 'flex', justifyContent: 'center', gap: 12, flexWrap: 'wrap', marginBottom: 18 }}>
-        <a href="/register" style={{ display: 'inline-flex', alignItems: 'center', gap: 8, padding: '16px 24px', borderRadius: 14, background: 'var(--green)', color: 'white', fontSize: 16, fontWeight: 700, boxShadow: '0 2px 0 var(--green-deep), 0 12px 24px -8px rgba(31,138,91,0.5)' }}>
+        <Link href="/register" style={{ display: 'inline-flex', alignItems: 'center', gap: 8, padding: '16px 24px', borderRadius: 14, background: 'var(--green)', color: 'white', fontSize: 16, fontWeight: 700, boxShadow: '0 2px 0 var(--green-deep), 0 12px 24px -8px rgba(31,138,91,0.5)' }}>
           Start learning free <Icon.Arrow />
-        </a>
+        </Link>
         <VideoModal isModalOpen={isModalOpen} setIsModalOpen={setIsModalOpen}/>
       </div>
 
@@ -424,7 +425,7 @@ const Hero = ({isModalOpen, setIsModalOpen}) => (
 );
 
 /* ── Skill Tree ─────────────────────────────────────────────────── */
-const SectionHeader = ({ tag, tagColor, title, subtitle, centered }) => {
+const SectionHeader = ({ tag, tagColor, title, subtitle, centered }: { tag: string; tagColor: 'green' | 'blue' | 'amber' | 'plum'; title: ReactNode; subtitle: ReactNode; centered?: boolean }) => {
   const colors = {
     green: { bg: 'var(--green-soft)', fg: 'var(--green-deep)' },
     blue:  { bg: 'var(--blue-soft)',  fg: 'var(--blue-deep)'  },
@@ -441,7 +442,9 @@ const SectionHeader = ({ tag, tagColor, title, subtitle, centered }) => {
   );
 };
 
-const nodes = [
+type TreeNodeData = { id: string; x: number; y: number; label: string; lvl: string; status: 'done' | 'active' | 'locked'; icon: string };
+
+const nodes: TreeNodeData[] = [
   { id: 'num',   x: 360, y: 50,  label: 'Numbers',            lvl: 'L1', status: 'done',   icon: '⊙'   },
   { id: 'arith', x: 220, y: 130, label: 'Arithmetic',         lvl: 'L1', status: 'done',   icon: '+−'  },
   { id: 'frac',  x: 500, y: 130, label: 'Fractions',          lvl: 'L1', status: 'done',   icon: '½'   },
@@ -462,10 +465,10 @@ const edges = [
   ['alg','trig'],['alg','int'],['geo','int'],['geo','pre2'],
 ];
 
-const nodeMap = Object.fromEntries(nodes.map(n => [n.id, n]));
+const nodeMap: Record<string, TreeNodeData> = Object.fromEntries(nodes.map(n => [n.id, n] as const));
 
-function nodeDescription(id) {
-  return ({
+function nodeDescription(id: string) {
+  return (({
     num:   'Counting, place value, integers. The bedrock everything stands on.',
     arith: 'Addition, subtraction, multiplication, division — drilled until automatic.',
     frac:  'Halves, quarters, and the world of parts. Visual + numerical.',
@@ -477,15 +480,17 @@ function nodeDescription(id) {
     trig:  'Sin, cos, tan, the unit circle, identities, graphs.',
     int:   'Polynomials, exponents, logarithms, quadratics, sequences and series.',
     pre2:  'Limits intuition, complex numbers, advanced functions, vectors.',
-  })[id] || '';
+  }) as Record<string, string>)[id] || '';
 }
 
-function nodeProgress(status) {
-  return ({ done: { pct: 100, label: '12 / 12 lessons' }, active: { pct: 58, label: '7 / 12 lessons' }, locked: { pct: 0, label: 'Not yet started' } })[status];
+function nodeProgress(status: string) {
+  return (({ done: { pct: 100, label: '12 / 12 lessons' }, active: { pct: 58, label: '7 / 12 lessons' }, locked: { pct: 0, label: 'Not yet started' } }) as Record<string, { pct: number; label: string }>)[status];
 }
 
-function nodeLessons(id) {
-  const map = {
+type NodeLesson = { title: string; xp: number; done: boolean };
+
+function nodeLessons(id: string): NodeLesson[] {
+  const map: Record<string, NodeLesson[]> = {
     alg:  [{ title:'What is a variable?',             xp:8,  done:true }, { title:'Solving linear equations',        xp:12, done:true }, { title:'Word problems with one unknown', xp:14, done:true }, { title:'Inequalities and number lines', xp:12, done:false }, { title:'Graphing y = mx + b', xp:16, done:false }],
     geo:  [{ title:'Angle relationships',             xp:10, done:true }, { title:'Triangle congruence',             xp:12, done:true }, { title:'Area of polygons',               xp:14, done:false }, { title:'Circles: arcs and sectors',    xp:14, done:false }, { title:'Pythagorean theorem', xp:16, done:false }],
     trig: [{ title:'Sin, cos, tan from triangles',    xp:14, done:false}, { title:'The unit circle',                 xp:16, done:false}, { title:'Identities you actually need',   xp:18, done:false }],
@@ -493,7 +498,7 @@ function nodeLessons(id) {
   return map[id] || [{ title:'Foundations', xp:10, done:true }, { title:'Core skills', xp:14, done:true }, { title:'Applications', xp:16, done:true }];
 }
 
-const TreeNode = ({ node, hovered, onHover }) => {
+const TreeNode = ({ node, hovered, onHover }: { node: TreeNodeData; hovered: boolean; onHover: (id: string) => void }) => {
   const isDone   = node.status === 'done';
   const isActive = node.status === 'active';
   const isLocked = node.status === 'locked';
@@ -519,7 +524,7 @@ const TreeNode = ({ node, hovered, onHover }) => {
   );
 };
 
-const NodeInspector = ({ node }) => {
+const NodeInspector = ({ node }: { node: TreeNodeData }) => {
   const colorMap = {
     done:   { bg: 'var(--green-soft)', deep: 'var(--green-deep)', label: 'Mastered'    },
     active: { bg: 'var(--blue-soft)',  deep: 'var(--blue-deep)',  label: 'In progress' },
@@ -686,7 +691,7 @@ const LessonAnatomy = () => {
 
           <div style={{ display:'grid', gap:14 }}>
             {features.map((f, i) => {
-              const c = colorsMap[f.color];
+              const c = colorsMap[f.color as keyof typeof colorsMap];
               return (
                 <div key={i} style={{ padding:24, borderRadius:20, background:'var(--paper)', border:'1px solid var(--line)', display:'grid', gridTemplateColumns:'56px 1fr', gap:18, alignItems:'start', boxShadow:'var(--shadow-sm)' }}>
                   <div className="mono" style={{ width:56, height:56, borderRadius:16, background:c.bg, color:c.fg, display:'flex', alignItems:'center', justifyContent:'center', fontSize:22, fontWeight:700 }}>{f.icon}</div>
@@ -706,11 +711,11 @@ const LessonAnatomy = () => {
 };
 
 /* ── Gamification ───────────────────────────────────────────────── */
-const Cell = ({ rows=1, dark, children, style: s, className: cls }) => (
+const Cell = ({ rows=1, dark, children, style: s, className: cls }: { rows?: number; dark?: boolean; children: ReactNode; style?: CSSProperties; className?: string }) => (
   <div className={cls} style={{ gridRow:`span ${rows}`, borderRadius:24, padding:28, background:dark?'var(--ink)':'var(--paper)', color:dark?'var(--paper)':'var(--ink)', border:dark?'none':'1px solid var(--line)', boxShadow:'var(--shadow-sm)', display:'flex', flexDirection:'column', position:'relative', overflow:'hidden', ...s }}>{children}</div>
 );
 
-const CellLabel = ({ children, color }) => (
+const CellLabel = ({ children, color }: { children: ReactNode; color?: string }) => (
   <span style={{ display:'inline-flex', alignItems:'center', gap:6, padding:'4px 10px', borderRadius:999, background:color||'var(--bg-2)', color:'var(--ink-2)', fontSize:11, fontWeight:700, letterSpacing:'0.06em', width:'fit-content', marginBottom:14 }}>{children}</span>
 );
 
@@ -718,7 +723,7 @@ const StreakCard = () => (
   <Cell className="col-span-1 sm:col-span-6 lg:col-span-5">
     <CellLabel color="var(--amber-soft)"><Icon.Flame style={{ color:'var(--amber-deep)' }}/> STREAK</CellLabel>
     <h3 style={{ margin:0, fontSize:28, fontWeight:700, letterSpacing:'-0.02em' }}>47 days of doing math.</h3>
-    <p style={{ margin:'8px 0 16px', fontSize:14, color:'var(--ink-2)', lineHeight:1.5 }}>A small flame for each day you finish a lesson. Miss a day and you can spend a Freeze. Miss two and we'll be honest with you.</p>
+    <p style={{ margin:'8px 0 16px', fontSize:14, color:'var(--ink-2)', lineHeight:1.5 }}>A small flame for each day you finish a lesson. Miss a day and you can spend a Freeze. Miss two and we&rsquo;ll be honest with you.</p>
     <div style={{ flex:1, display:'flex', alignItems:'flex-end', gap:4 }}>
       {Array.from({ length:14 }).map((_,i) => {
         const intensity = i < 3 ? 0.3 : i < 8 ? 0.6 : i < 13 ? 0.9 : 1;
@@ -765,7 +770,7 @@ const HeartsCard = () => (
       {[1,2,3,4,5].map(i => <span key={i} style={{ color: i<=4?'#E04A4A':'var(--bg-2)', fontSize:22 }}><Icon.Heart style={{ width:22, height:22 }}/></span>)}
     </div>
     <h4 style={{ margin:'0 0 6px', fontSize:17, fontWeight:700, letterSpacing:'-0.015em' }}>Slow down, get it right.</h4>
-    <p style={{ margin:0, fontSize:13, color:'var(--ink-2)', lineHeight:1.5 }}>Miss too many in a row and you'll need to review before continuing. Not punishment — a nudge.</p>
+    <p style={{ margin:0, fontSize:13, color:'var(--ink-2)', lineHeight:1.5 }}>Miss too many in a row and you&rsquo;ll need to review before continuing. Not punishment — a nudge.</p>
   </Cell>
 );
 
@@ -934,13 +939,13 @@ const Testimonials = () => {
       <div style={{ maxWidth:1240, margin:'0 auto', padding:'0 28px' }}>
         <SectionHeader
           tag="The proof" tagColor="green" centered
-          title={<>Real learners. <span className="serif" style={{ color:'var(--green-deep)', fontWeight:500 }}>Real "ohhh, I get it now."</span></>}
+          title={<>Real learners. <span className="serif" style={{ color:'var(--green-deep)', fontWeight:500 }}>Real &ldquo;ohhh, I get it now.&rdquo;</span></>}
           subtitle="284,000 people logged in today. These are some of them."
         />
         <div style={{ marginTop:56, display:'grid', gridTemplateColumns:'repeat(2,1fr)', gap:18 }}>
           {items.map((t, i) => (
             <div key={i} style={{ padding:32, borderRadius:24, background:'var(--paper)', border:'1px solid var(--line)', boxShadow:'var(--shadow-sm)', display:'flex', flexDirection:'column' }}>
-              <p style={{ margin:'0 0 24px', fontSize:18, lineHeight:1.5, color:'var(--ink)', letterSpacing:'-0.005em', flex:1 }}>"{t.quote}"</p>
+              <p style={{ margin:'0 0 24px', fontSize:18, lineHeight:1.5, color:'var(--ink)', letterSpacing:'-0.005em', flex:1 }}>&ldquo;{t.quote}&rdquo;</p>
               <div style={{ display:'flex', alignItems:'center', gap:12 }}>
                 <span style={{ width:40, height:40, borderRadius:999, background:t.color, color:'white', display:'inline-flex', alignItems:'center', justifyContent:'center', fontWeight:700, fontSize:16, flexShrink:0 }}>{t.avatar}</span>
                 <div>
@@ -987,7 +992,7 @@ const CTA = () => (
             <span className="serif" style={{ fontWeight:500, color:'#FBE4A3' }}>climbing?</span>
           </h2>
           <p style={{ margin:'0 0 32px', fontSize:19, lineHeight:1.5, color:'rgba(255,255,255,0.85)', maxWidth:520 }}>
-            Take the 60-second placement and we'll drop a pin on your skill tree. Your first lesson is waiting on the other side.
+            Take the 60-second placement and we&rsquo;ll drop a pin on your skill tree. Your first lesson is waiting on the other side.
           </p>
           <div style={{ display:'flex', gap:12, flexWrap:'wrap', alignItems:'center' }}>
             <a href="#" style={{ display:'inline-flex', alignItems:'center', gap:8, padding:'16px 26px', borderRadius:14, background:'white', color:'var(--green-deep)', fontWeight:700, fontSize:16, boxShadow:'0 2px 0 rgba(0,0,0,0.1),0 10px 30px rgba(0,0,0,0.15)' }}>Take the placement <Icon.Arrow/></a>

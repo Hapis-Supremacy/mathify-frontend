@@ -12,6 +12,8 @@ const eslintConfig = defineConfig([
     "out/**",
     "build/**",
     "next-env.d.ts",
+    // Legacy Vite app being migrated into /app — not part of the Next.js build.
+    "frontend/**",
   ]),
 ]);
 
