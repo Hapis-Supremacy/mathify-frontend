@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Plus_Jakarta_Sans, JetBrains_Mono, Fraunces } from "next/font/google";
-import "./globals.css";
+import "@/app/(shared)/globals.css";
+import "@/app/(shared)/tokens.css";
 
 const plusJakartaSans = Plus_Jakarta_Sans({
   variable: "--font-plus-jakarta-sans",
@@ -30,6 +31,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
+      className={`${plusJakartaSans.variable} ${jetbrainsMono.variable} ${fraunces.variable}`}
     >
       <body className="min-h-full flex flex-col">{children}</body>
     </html>
