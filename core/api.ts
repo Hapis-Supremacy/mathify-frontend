@@ -109,6 +109,66 @@ export interface LearningPath {
   path: CourseNode[];
 }
 
+// --- Admin CRUD (see ADMIN_API_PROPOSAL.md; backend implementation pending) ---
+
+/** Body for creating/updating a course. `totalLessons` is server-computed. */
+export interface CourseInput {
+  title: string;
+  description: string;
+  category: string;
+  level: string;
+  levelNum: number;
+  color: string;
+  glyph?: string;
+  estimatedHours?: string;
+  xpReward?: number;
+  status?: string;
+  prerequisite?: string[];
+}
+
+export interface ChapterInput {
+  title: string;
+  order?: number;
+}
+
+/** Chapter summary in a chapter list (POST response / list endpoints). */
+export interface ChapterSummary {
+  chapterId: string;
+  title: string;
+  order?: number;
+}
+
+/** Quiz summary in the per-chapter list (no questions). */
+export interface QuizSummary {
+  quizId: string;
+  title: string;
+  passingScore: number;
+  questionCount: number;
+}
+
+export interface QuizInput {
+  title: string;
+  passingScore: number;
+}
+
+/** One answer choice. `correct` is only present for ADMIN reads. */
+export interface QuestionOption {
+  text: string;
+  correct: boolean;
+}
+
+export interface QuestionInput {
+  prompt: string;
+  points: number;
+  type: QuizQuestionType;
+  options: QuestionOption[];
+}
+
+/** A question as returned to an admin — includes the answer options. */
+export interface QuestionAdmin extends QuizQuestion {
+  options: QuestionOption[];
+}
+
 export interface ApiErrorBody {
   error: string;
   details?: string;
@@ -168,4 +228,40 @@ export const api = {
   getLearningPath: (courseId: string) =>
     request<LearningPath>(`/courses/paths?courseId=${encodeURIComponent(courseId)}`),
   getQuiz: (id: string) => request<Quiz>(`/quizzes/${encodeURIComponent(id)}`),
+
+  /**
+   * Admin CRUD against ADMIN_API_PROPOSAL.md. These endpoints are not yet live
+   * on the backend — calls reject with ApiError until they are implemented.
+   */
+  admin: {
+    createCourse: (body: CourseInput) =>
+      request<CourseDetail>("/courses", { method: "POST", body: JSON.stringify(body) }),
+    updateCourse: (id: string, body: CourseInput) =>
+      request<CourseDetail>(`/courses/${encodeURIComponent(id)}`, { method: "PUT", body: JSON.stringify(body) }),
+    deleteCourse: (id: string) =>
+      request<void>(`/courses/${encodeURIComponent(id)}`, { method: "DELETE" }),
+
+    createChapter: (courseId: string, body: ChapterInput) =>
+      request<ChapterSummary>(`/courses/${encodeURIComponent(courseId)}/chapters`, { method: "POST", body: JSON.stringify(body) }),
+    updateChapter: (courseId: string, chapterId: string, body: ChapterInput) =>
+      request<ChapterSummary>(`/courses/${encodeURIComponent(courseId)}/chapters/${encodeURIComponent(chapterId)}`, { method: "PUT", body: JSON.stringify(body) }),
+    deleteChapter: (courseId: string, chapterId: string) =>
+      request<void>(`/courses/${encodeURIComponent(courseId)}/chapters/${encodeURIComponent(chapterId)}`, { method: "DELETE" }),
+
+    listQuizzes: (chapterId: string) =>
+      request<QuizSummary[]>(`/chapters/${encodeURIComponent(chapterId)}/quizzes`),
+    createQuiz: (chapterId: string, body: QuizInput) =>
+      request<Quiz>(`/chapters/${encodeURIComponent(chapterId)}/quizzes`, { method: "POST", body: JSON.stringify(body) }),
+    updateQuiz: (quizId: string, body: QuizInput) =>
+      request<Quiz>(`/quizzes/${encodeURIComponent(quizId)}`, { method: "PUT", body: JSON.stringify(body) }),
+    deleteQuiz: (quizId: string) =>
+      request<void>(`/quizzes/${encodeURIComponent(quizId)}`, { method: "DELETE" }),
+
+    createQuestion: (quizId: string, body: QuestionInput) =>
+      request<QuestionAdmin>(`/quizzes/${encodeURIComponent(quizId)}/questions`, { method: "POST", body: JSON.stringify(body) }),
+    updateQuestion: (quizId: string, questionId: string, body: QuestionInput) =>
+      request<QuestionAdmin>(`/quizzes/${encodeURIComponent(quizId)}/questions/${encodeURIComponent(questionId)}`, { method: "PUT", body: JSON.stringify(body) }),
+    deleteQuestion: (quizId: string, questionId: string) =>
+      request<void>(`/quizzes/${encodeURIComponent(quizId)}/questions/${encodeURIComponent(questionId)}`, { method: "DELETE" }),
+  },
 };

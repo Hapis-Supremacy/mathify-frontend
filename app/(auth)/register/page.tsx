@@ -11,6 +11,7 @@ import {
 } from "firebase/auth";
 import { getFirebaseAuth } from "@/core/firebase";
 import { api } from "@/core/api";
+import { setStoredRole } from "@/app/(shared)/auth";
 
     // ── Icons ──────────────────────────────────────────────────────────────────
     const Icon = {
@@ -196,6 +197,7 @@ export default function RegisterPage() {
   // then route by role.
   const finishRegister = async (idToken: string) => {
     const { role } = await api.login(idToken);
+    setStoredRole(role); // cache for the client-side RBAC route guards
     router.push(role === 'ADMIN' ? '/admin' : '/dashboard');
     router.refresh();
   };

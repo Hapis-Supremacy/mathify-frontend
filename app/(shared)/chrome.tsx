@@ -7,6 +7,7 @@ import { Icon, Logo } from "@/app/(shared)/icons";
 import { Avatar } from "@/app/(shared)/primitives";
 import { NotificationBell } from "@/app/(shared)/notification-bell";
 import { useStudent } from "@/app/(shared)/student";
+import { clearStoredRole } from "@/app/(shared)/auth";
 import { api } from "@/core/api";
 
 const NAV_ITEMS = [
@@ -20,6 +21,7 @@ function useLogout() {
   const router = useRouter();
   return async () => {
     try { await api.logout(); } catch { /* ignore — clear client state regardless */ }
+    clearStoredRole();
     router.push("/login");
     router.refresh();
   };
